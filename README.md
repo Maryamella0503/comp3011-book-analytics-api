@@ -1,5 +1,3 @@
-# comp3011-book-analytics-api
-
 # COMP3011 Book Analytics API
 
 A data-driven Web API for managing a book catalogue and generating analytics insights (e.g., top-rated books, genre statistics, rating distributions).  
