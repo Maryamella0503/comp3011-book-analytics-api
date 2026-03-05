@@ -12,7 +12,7 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
-    app.config["ERROR_404_HELP"] = False
+    app.config["RESTX_ERROR_404_HELP"] = False
     db.init_app(app)
     jwt.init_app(app)
     Migrate(app, db)
