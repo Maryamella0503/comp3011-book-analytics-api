@@ -7,4 +7,12 @@ class Book(db.Model):
     title = db.Column(db.String(200), nullable=False, index=True)
     author = db.Column(db.String(120), nullable=False, index=True)
     genre = db.Column(db.String(60), nullable=False, index=True)
-    rating = db.Column(db.Float, nullable=False)  # 0..5 expected
+    rating = db.Column(db.Float, nullable=False)
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "title": self.title,
+            "author": self.author,
+            "genre": self.genre,
+            "rating": self.rating,
+        }

@@ -3,6 +3,7 @@ from flask_restx import Namespace, Resource, fields
 from app.extensions.db import db
 from app.models.book import Book
 from flask_jwt_extended import jwt_required
+from sqlalchemy import or_
 
 ns = Namespace("books", description="Book CRUD endpoints")
 
@@ -96,3 +97,42 @@ class BookItem(Resource):
         db.session.delete(book)
         db.session.commit()
         return {"message": "deleted"}, 200
+
+@ns.route("")
+class BooksCollection(Resource):
+    def get(self):
+        q = request.args.get("q", type=str)
+        genre = request.args.get("genre", type=str)
+        min_rating = request.args.get("min_rating", type=float)
+        limit = request.args.get("limit", default=50, type=int)
+        offset = request.args.get("offset", default=0, type=int)
+        sort = request.args.get("sort", default="rating_desc", type=str)
+
+        query = Book.query
+
+        if q:
+            like = f"%{q}%"
+            query = query.filter(or_(Book.title.ilike(like), Book.author.ilike(like)))
+
+        if genre:
+            query = query.filter(Book.genre == genre)
+
+        if min_rating is not None:
+            query = query.filter(Book.rating >= min_rating)
+
+        if sort == "rating_asc":
+            query = query.order_by(Book.rating.asc())
+        elif sort == "title_asc":
+            query = query.order_by(Book.title.asc())
+        else:
+            query = query.order_by(Book.rating.desc())
+
+        total = query.count()
+        items = query.offset(offset).limit(limit).all()
+
+        return {
+            "total": total,
+            "limit": limit,
+            "offset": offset,
+            "results": [b.to_dict() for b in items]
+        }, 200

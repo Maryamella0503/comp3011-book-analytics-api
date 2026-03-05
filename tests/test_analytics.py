@@ -31,3 +31,14 @@ def test_top_rated(client):
     assert res.status_code == 200
     data = res.get_json()
     assert "results" in data
+
+def test_recommendations(client):
+    seed_books(client)  # your existing seeding function
+    res = client.get("/books")
+    first_id = res.get_json()[0]["id"]
+
+    res = client.get(f"/analytics/recommendations?seed_book_id={first_id}&limit=2")
+    assert res.status_code == 200
+    data = res.get_json()
+    assert "seed" in data
+    assert "results" in data
