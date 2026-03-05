@@ -1,10 +1,23 @@
 from flask_restx import Api
 
+authorizations = {
+    "BearerAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization",
+        "description": "Add: Bearer <JWT token>"
+    }
+}
+
 api = Api(
     title="COMP3011 Book Analytics API",
     version="0.1.0",
     description="Book catalogue CRUD + analytics endpoints (Flask).",
-    doc="/docs",  # Swagger UI
+    doc="/docs",
+    authorizations=authorizations,
+    security="BearerAuth",
+    validate=True,
+    catch_all_404s=False
 )
 
 def register_namespaces(api: Api):

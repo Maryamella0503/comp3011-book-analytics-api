@@ -37,6 +37,7 @@ class BooksCollection(Resource):
 
     @ns.expect(book_create_model, validate=True)
     @ns.marshal_with(book_model, code=201)
+    @jwt_required()
     def post(self):
         """Create a new book"""
         data = request.json or {}
@@ -66,6 +67,7 @@ class BookItem(Resource):
 
     @ns.expect(book_create_model, validate=True)
     @ns.marshal_with(book_model)
+    @jwt_required()
     def put(self, book_id: int):
         """Update a book"""
         book = Book.query.get(book_id)
@@ -84,6 +86,7 @@ class BookItem(Resource):
         db.session.commit()
         return book, 200
 
+    @jwt_required()
     def delete(self, book_id: int):
         """Delete a book"""
         book = Book.query.get(book_id)
