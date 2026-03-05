@@ -2,6 +2,7 @@ from flask import request
 from flask_restx import Namespace, Resource, fields
 from app.extensions.db import db
 from app.models.book import Book
+from flask_jwt_extended import jwt_required
 
 ns = Namespace("books", description="Book CRUD endpoints")
 
