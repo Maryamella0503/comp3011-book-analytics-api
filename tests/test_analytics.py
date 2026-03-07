@@ -33,15 +33,16 @@ def test_top_rated(client):
     assert "results" in data
 
 def test_recommendations(client):
-    seed_books(client)  # your existing seeding function
+    seed_books(client)
     res = client.get("/books?limit=1")
     first_id = res.get_json()["results"][0]["id"]
 
     res = client.get(f"/analytics/recommendations?seed_book_id={first_id}&limit=2")
     assert res.status_code == 200
     data = res.get_json()
-    assert "seed" in data
-    assert "results" in data
+    assert "seed_book" in data
+    assert "recommendations" in data
+    assert isinstance(data["recommendations"], list)
 
 def test_genre_distribution(client):
     seed_books(client)
