@@ -61,18 +61,14 @@ class RatingDistribution(Resource):
     
 @ns.route("/recommendations")
 class Recommendations(Resource):
-    @ns.doc(params={
-        "seed_book_id": "ID of the book to base recommendations on",
-        "limit": "How many recommendations to return (default 10)"
-    })
     def get(self):
         seed_book_id = request.args.get("seed_book_id", type=int)
-        limit = request.args.get("limit", default=10, type=int)
+        limit = request.args.get("limit", default=5, type=int)
 
         if not seed_book_id:
             ns.abort(400, "seed_book_id is required")
 
-        seed = Book.query.get(seed_book_id)
+        seed = db.session.get(Book, seed_book_id)
         if not seed:
             ns.abort(404, "Seed book not found")
 
@@ -84,15 +80,90 @@ class Recommendations(Resource):
             .all()
         )
 
-        # Return format compatible with your existing API style:
         return {
-            "seed": seed.to_dict() if hasattr(seed, "to_dict") else {
-                "id": seed.id, "title": seed.title, "author": seed.author, "genre": seed.genre, "rating": seed.rating
+            "seed_book": {
+                "id": seed.id,
+                "title": seed.title,
+                "author": seed.author,
+                "genre": seed.genre,
+                "rating": seed.rating,
             },
-            "results": [
-                r.to_dict() if hasattr(r, "to_dict") else {
-                    "id": r.id, "title": r.title, "author": r.author, "genre": r.genre, "rating": r.rating
+            "recommendations": [
+                {
+                    "id": r.id,
+                    "title": r.title,
+                    "author": r.author,
+                    "genre": r.genre,
+                    "rating": r.rating,
                 }
                 for r in recs
+            ]
+        }, 200
+    
+@ns.route("/genre-distribution")
+class GenreDistribution(Resource):
+    def get(self):
+        rows = (
+            db.session.query(Book.genre, func.count(Book.id))
+            .group_by(Book.genre)
+            .order_by(func.count(Book.id).desc())
+            .all()
+        )
+
+        return {
+            "results": [
+                {"genre": genre, "count": count}
+                for genre, count in rows
+            ]
+        }, 200
+
+
+@ns.route("/top-authors")
+class TopAuthors(Resource):
+    def get(self):
+        limit = request.args.get("limit", default=10, type=int)
+
+        rows = (
+            db.session.query(Book.author, func.count(Book.id))
+            .group_by(Book.author)
+            .order_by(func.count(Book.id).desc())
+            .limit(limit)
+            .all()
+        )
+
+        return {
+            "results": [
+                {"author": author, "books": count}
+                for author, count in rows
+            ]
+        }, 200
+
+
+@ns.route("/average-rating")
+class AverageRating(Resource):
+    def get(self):
+        avg_rating = db.session.query(func.avg(Book.rating)).scalar()
+
+        return {
+            "average_rating": round(float(avg_rating), 2) if avg_rating is not None else None
+        }, 200
+    
+@ns.route("/authors-with-most-books")
+class AuthorsWithMostBooks(Resource):
+    def get(self):
+        limit = request.args.get("limit", default=10, type=int)
+
+        rows = (
+            db.session.query(Book.author, func.count(Book.id))
+            .group_by(Book.author)
+            .order_by(func.count(Book.id).desc())
+            .limit(limit)
+            .all()
+        )
+
+        return {
+            "results": [
+                {"author": author, "book_count": count}
+                for author, count in rows
             ]
         }, 200

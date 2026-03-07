@@ -32,3 +32,4 @@ def test_create_book_with_auth(client):
     )
 
     assert res.status_code == 201
+
