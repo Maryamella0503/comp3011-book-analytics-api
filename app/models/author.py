@@ -8,3 +8,10 @@ class Author(db.Model):
     nationality = db.Column(db.String(80), nullable=True)
 
     books = db.relationship("Book", backref="author_ref", lazy=True)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "nationality": self.nationality
+        }

@@ -8,6 +8,10 @@ class Book(db.Model):
     author = db.Column(db.String(120), nullable=False, index=True)
     genre = db.Column(db.String(60), nullable=False, index=True)
     rating = db.Column(db.Float, nullable=False)
+
+    # relationship to Author model
+    author_id = db.Column(db.Integer, db.ForeignKey("authors.id"), nullable=True)
+
     def to_dict(self):
         return {
             "id": self.id,
@@ -15,4 +19,5 @@ class Book(db.Model):
             "author": self.author,
             "genre": self.genre,
             "rating": self.rating,
+            "author_id": self.author_id
         }

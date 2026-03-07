@@ -6,7 +6,7 @@ from app.config import Config
 from app.extensions.db import db
 from app.extensions.jwt import jwt
 from app.routes import api, register_namespaces
-
+from app.models import Book, Author
 
 def create_app():
     app = Flask(__name__)
