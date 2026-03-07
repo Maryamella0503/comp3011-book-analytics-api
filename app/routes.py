@@ -23,10 +23,10 @@ api = Api(
 def register_namespaces(api: Api):
     from app.resources.books import ns as books_ns
     from app.resources.analytics import ns as analytics_ns
+    from app.resources.auth import ns as auth_ns
+    from app.resources.authors import ns as authors_ns
 
     api.add_namespace(books_ns)
     api.add_namespace(analytics_ns)
-
-from app.resources.auth import ns as auth_ns
-...
-api.add_namespace(auth_ns)
+    api.add_namespace(auth_ns)
+    api.add_namespace(authors_ns, path="/authors")
