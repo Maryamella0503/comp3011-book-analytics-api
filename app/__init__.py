@@ -1,3 +1,10 @@
+"""
+Application factory for the Book Analytics API.
+
+Initialises Flask, database, JWT authentication, API namespaces,
+and global error handlers.
+"""
+
 from flask import Flask
 from flask_migrate import Migrate
 from werkzeug.exceptions import HTTPException

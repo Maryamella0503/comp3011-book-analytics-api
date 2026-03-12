@@ -1,3 +1,10 @@
+"""
+Authentication endpoints.
+
+Implements JWT-based login for protecting write operations
+such as creating, updating, and deleting books.
+"""
+
 from flask import request
 from flask_restx import Namespace, Resource, fields
 from flask_jwt_extended import create_access_token
@@ -14,7 +21,7 @@ token_model = ns.model("TokenResponse", {
     "token_type": fields.String,
 })
 
-# Demo user for coursework (explain in report)
+# Demo user (explained in report)
 DEMO_USER = {"username": "demo", "password": "demo"}
 
 @ns.route("/login")

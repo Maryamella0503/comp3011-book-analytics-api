@@ -1,3 +1,10 @@
+"""
+Application configuration.
+
+Defines database connection and JWT configuration.
+Environment variables can override default values.
+"""
+
 import os
 
 class Config:

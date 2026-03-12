@@ -1,3 +1,9 @@
+"""
+Author endpoints.
+
+Allows retrieval of authors and their associated books.
+"""
+
 from flask_restx import Namespace, Resource
 from app.models.author import Author
 

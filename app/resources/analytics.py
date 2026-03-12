@@ -1,3 +1,10 @@
+"""
+Analytics API endpoints.
+
+Provides analytical queries such as top-rated books,
+genre statistics, rating distributions, and recommendations.
+"""
+
 from flask_restx import Namespace, Resource
 from sqlalchemy import func
 from app.models.book import Book
@@ -13,7 +20,7 @@ class TopRated(Resource):
         # simple + reliable: order by rating desc
         limit = 10
         try:
-            limit = int((__import__("flask").request.args.get("limit", "10")))
+            limit = request.args.get("limit", default=10, type=int)
         except Exception:
             limit = 10
 

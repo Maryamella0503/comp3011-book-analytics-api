@@ -1,3 +1,10 @@
+"""
+API routing configuration.
+
+Initialises the Flask-RESTX API instance and registers all
+resource namespaces (books, analytics, authentication, authors).
+"""
+
 from flask_restx import Api
 
 authorizations = {

@@ -1,6 +1,14 @@
+"""
+Book database model.
+
+Represents book metadata stored in the database,
+including title, author, genre, rating, and author relationship.
+"""
+
 from app.extensions.db import db
 
 class Book(db.Model):
+    """Book model storing metadata and an optional link to an author."""
     __tablename__ = "books"
 
     id = db.Column(db.Integer, primary_key=True)

@@ -1,6 +1,13 @@
+"""
+Author database model.
+
+Represents authors and their relationship with books.
+"""
+
 from app.extensions.db import db
 
 class Author(db.Model):
+    """Author model linked to one or more books."""
     __tablename__ = "authors"
 
     id = db.Column(db.Integer, primary_key=True)

@@ -1,3 +1,11 @@
+"""
+Analytics endpoint tests.
+
+Seeds a small dataset and verifies analytics responses such as
+top-rated books, recommendations, genre distribution, and averages.
+"""
+
+# Helper used by tests to obtain a valid JWT token.
 def get_token(client):
     res = client.post("/auth/login", json={
         "username": "demo",
@@ -5,7 +13,7 @@ def get_token(client):
     })
     return res.get_json()["access_token"]
 
-
+# Seed a small, predictable dataset for analytics testing.
 def seed_books(client):
     token = get_token(client)
 
@@ -22,7 +30,7 @@ def seed_books(client):
             headers={"Authorization": f"Bearer {token}"}
         )
 
-
+# The endpoint should return ranked results for the seeded books.
 def test_top_rated(client):
     seed_books(client)
 
@@ -32,6 +40,7 @@ def test_top_rated(client):
     data = res.get_json()
     assert "results" in data
 
+# Recommendations should return the seed book and similar books.
 def test_recommendations(client):
     seed_books(client)
     res = client.get("/books?limit=1")
@@ -44,6 +53,7 @@ def test_recommendations(client):
     assert "recommendations" in data
     assert isinstance(data["recommendations"], list)
 
+# Genre distribution should return aggregated genre counts.
 def test_genre_distribution(client):
     seed_books(client)
     res = client.get("/analytics/genre-distribution")
@@ -51,7 +61,7 @@ def test_genre_distribution(client):
     data = res.get_json()
     assert "results" in data
 
-
+# Average rating should return a single aggregated value.
 def test_top_authors(client):
     seed_books(client)
     res = client.get("/analytics/top-authors?limit=5")
@@ -59,7 +69,7 @@ def test_top_authors(client):
     data = res.get_json()
     assert "results" in data
 
-
+# Average rating should return a single aggregated value.
 def test_average_rating(client):
     seed_books(client)
     res = client.get("/analytics/average-rating")

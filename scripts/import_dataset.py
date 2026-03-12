@@ -1,14 +1,20 @@
+"""
+Dataset import script.
+
+Loads a book dataset from CSV and inserts records
+into the database for analytics queries.
+"""
+
 import os
 import sys
+import csv
+import random
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-import csv
-import random
 from app import create_app
 from app.extensions.db import db
 from app.models.book import Book
-
 
 CSV_PATH = "data/books.csv"
 
@@ -24,6 +30,7 @@ GENRES = [
 ]
 
 def main():
+    """Import the book dataset into the SQLite database."""
     app = create_app()
 
     with app.app_context():
@@ -34,17 +41,9 @@ def main():
 
             for row in reader:
                 try:
-                    title = row["title"]
-                    author = row["authors"]
+                    title = row["title"].strip()
+                    author = row["authors"].strip()
                     rating = float(row["average_rating"])
-
-                    book = Book(
-                        title=title,
-                        author=author,
-                        genre=random.choice(GENRES),
-                        rating=rating
-                    )
-
                 except Exception:
                     continue
 
@@ -52,8 +51,8 @@ def main():
                     continue
 
                 book = Book(
-                    title=title.strip(),
-                    author=author.strip(),
+                    title=title,
+                    author=author,
                     genre=random.choice(GENRES),
                     rating=rating
                 )
@@ -61,13 +60,12 @@ def main():
                 db.session.add(book)
                 added += 1
 
-                # commit every 100 rows
+                # Commit in batches to avoid a very large uncommitted transaction
                 if added % 100 == 0:
                     db.session.commit()
 
         db.session.commit()
         print(f"Imported {added} books successfully")
-
 
 if __name__ == "__main__":
     main()

@@ -1,3 +1,10 @@
+"""
+Book endpoint tests.
+
+Covers authentication protection and authenticated book creation.
+"""
+
+# Helper used by tests to obtain a valid JWT token.
 def get_token(client):
     res = client.post("/auth/login", json={
         "username": "demo",
@@ -5,7 +12,7 @@ def get_token(client):
     })
     return res.get_json()["access_token"]
 
-
+# Creating a book without a token should be rejected.
 def test_books_requires_auth(client):
     res = client.post("/books", json={
         "title": "X",
@@ -16,7 +23,7 @@ def test_books_requires_auth(client):
 
     assert res.status_code in (401, 422)
 
-
+# Authenticated users should be able to create a book successfully.
 def test_create_book_with_auth(client):
     token = get_token(client)
 

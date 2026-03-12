@@ -1,3 +1,10 @@
+"""
+Author population script.
+
+Extracts unique authors from books and populates
+the authors table while linking books to their authors.
+"""
+
 import os
 import sys
 
@@ -31,7 +38,7 @@ def main():
         db.session.commit()
         print(f"Added {added} authors.")
 
-        # optional: connect books to authors
+        # Link each book row to its matching author record
         for book in books:
             author = Author.query.filter_by(name=book.author.strip()).first()
             if author:

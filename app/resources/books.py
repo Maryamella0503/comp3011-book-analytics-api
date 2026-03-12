@@ -1,3 +1,10 @@
+"""
+Book CRUD API endpoints.
+
+Provides endpoints to create, read, update, delete,
+and search books stored in the database.
+"""
+
 from flask import request
 from flask_restx import Namespace, Resource, fields
 from app.extensions.db import db
@@ -150,70 +157,3 @@ class BookItem(Resource):
         db.session.delete(book)
         db.session.commit()
         return {"message": "deleted"}, 200
-
-@ns.route("")
-class BooksCollection(Resource):
-    @ns.doc(params={
-        "q": "Search in title or author (case-insensitive)",
-        "genre": "Filter by genre (exact match)",
-        "min_rating": "Filter by minimum rating (e.g. 4.5)",
-        "limit": "Number of results to return (default 50, max 200)",
-        "offset": "Pagination offset (default 0)",
-        "sort": "Sort order: rating_desc, rating_asc, title_asc, title_desc"
-    })
-    def get(self):
-        q = request.args.get("q", type=str)
-        genre = request.args.get("genre", type=str)
-        min_rating = request.args.get("min_rating", type=float)
-
-        limit = request.args.get("limit", default=50, type=int)
-        offset = request.args.get("offset", default=0, type=int)
-        sort = request.args.get("sort", default="rating_desc", type=str)
-
-        # safety limits
-        limit = max(1, min(limit, 200))
-        offset = max(0, offset)
-
-        query = Book.query
-
-        if q:
-            like = f"%{q}%"
-            query = query.filter(or_(Book.title.ilike(like), Book.author.ilike(like)))
-
-        if genre:
-            query = query.filter(Book.genre == genre)
-
-        if min_rating is not None:
-            query = query.filter(Book.rating >= min_rating)
-
-        # sorting
-        if sort == "rating_asc":
-            query = query.order_by(Book.rating.asc())
-        elif sort == "title_asc":
-            query = query.order_by(Book.title.asc())
-        elif sort == "title_desc":
-            query = query.order_by(Book.title.desc())
-        else:
-            query = query.order_by(Book.rating.desc())
-
-        total = query.count()
-        items = query.offset(offset).limit(limit).all()
-
-        # Works whether or not you have to_dict()
-        results = [
-            b.to_dict() if hasattr(b, "to_dict") else {
-                "id": b.id,
-                "title": b.title,
-                "author": b.author,
-                "genre": b.genre,
-                "rating": b.rating,
-            }
-            for b in items
-        ]
-
-        return {
-            "total": total,
-            "limit": limit,
-            "offset": offset,
-            "results": results
-        }, 200
