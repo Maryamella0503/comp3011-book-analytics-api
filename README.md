@@ -53,10 +53,21 @@ tests/
   test_books.py
 docs/
   api-documentation.pdf
+  database_schema.png
 instance/
   books.db
 migrations/
 ```
+## Database Schema
+
+The API uses a relational database structure linking authors and books through a one-to-many relationship.
+
+Authors → Books
+
+- One author can have multiple books
+- Each book references its author using a foreign key
+
+![Database Schema](docs/database_schema.png)
 
 ## Setup and Installation
 
