@@ -1,36 +1,60 @@
 # COMP3011 Book Analytics API
-A data-driven Web API for managing a book catalogue and generating analytics insights (e.g., top-rated books, genre statistics, rating distributions)
+
+A Flask-based REST API for managing and analysing book metadata. This project was developed for **COMP3011 – Web Services and Web Data** and demonstrates CRUD operations, JWT authentication, relational database modelling, dataset integration, and analytics endpoints.
 
 ## Features
-- **CRUD** for Books (Create, Read, Update, Delete) backed by an SQL database
-- **Analytics endpoints** (e.g., top-rated, genre trends, rating summary)
-- **Authentication** (JWT) for protected routes (optional routes may remain public depending on design)
-- **OpenAPI / Swagger** interactive docs via FastAPI
-- **Automated tests** + CI workflow (GitHub Actions)
 
----
+- CRUD operations for books
+- JWT authentication for protected write operations
+- Filtering, sorting, and pagination on `/books`
+- Analytics endpoints including recommendations, top-rated books, and genre statistics
+- Relational modelling between **authors** and **books**
+- Automated tests with `pytest`
+- Swagger / OpenAPI documentation via Flask-RESTX
+- SQLite database with SQLAlchemy and Flask-Migrate
 
 ## Tech Stack
-- **API Framework:** FastAPI
-- **Language:** Python 3.11+ (3.10+ should work)
-- **Database:** SQLite
-- **ORM:** SQLAlchemy
-- **Auth:** JWT (via python-jose / PyJWT)
-- **Testing:** pytest
-- **Docs:** Swagger UI + exported PDF in `/docs`
 
----
+- Python
+- Flask
+- Flask-RESTX
+- SQLAlchemy
+- SQLite
+- Flask-JWT-Extended
+- Flask-Migrate
+- Pytest
 
 ## Project Structure
+
 ```text
 app/
-  main.py          # FastAPI entrypoint
-  db.py            # database engine/session
-  models.py        # SQLAlchemy models
-  schemas.py       # Pydantic schemas
-  crud.py          # CRUD operations
-  auth.py          # JWT auth helpers + dependencies
-  analytics.py     # analytics logic + endpoints
-tests/
-docs/
+  __init__.py
+  config.py
+  routes.py
+  extensions/
+    db.py
+    jwt.py
+  models/
+    __init__.py
+    author.py
+    book.py
+  resources/
+    analytics.py
+    auth.py
+    authors.py
+    books.py
 scripts/
+  import_dataset.py
+  populate_authors.py
+tests/
+  conftest.py
+  test_analytics.py
+  test_auth.py
+  test_books.py
+docs/
+  api-documentation.pdf
+instance/
+  books.db
+migrations/
+run.py
+requirements.txt
