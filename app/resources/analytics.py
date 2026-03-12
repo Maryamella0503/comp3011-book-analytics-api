@@ -167,3 +167,28 @@ class AuthorsWithMostBooks(Resource):
                 for author, count in rows
             ]
         }, 200
+
+@ns.route("/genre-stats")
+class GenreStats(Resource):
+    def get(self):
+        """Average rating and number of books per genre"""
+
+        stats = (
+            db.session.query(
+                Book.genre,
+                func.avg(Book.rating).label("avg_rating"),
+                func.count(Book.id).label("book_count")
+            )
+            .group_by(Book.genre)
+            .order_by(func.avg(Book.rating).desc())
+            .all()
+        )
+
+        return [
+            {
+                "genre": genre,
+                "avg_rating": round(avg_rating, 2),
+                "book_count": book_count
+            }
+            for genre, avg_rating, book_count in stats
+        ]

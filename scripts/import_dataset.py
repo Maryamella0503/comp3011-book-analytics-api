@@ -4,6 +4,7 @@ import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 import csv
+import random
 from app import create_app
 from app.extensions.db import db
 from app.models.book import Book
@@ -11,6 +12,16 @@ from app.models.book import Book
 
 CSV_PATH = "data/books.csv"
 
+GENRES = [
+    "Fantasy",
+    "Sci-Fi",
+    "Romance",
+    "Mystery",
+    "Nonfiction",
+    "Thriller",
+    "Historical",
+    "Adventure"
+]
 
 def main():
     app = create_app()
@@ -27,8 +38,12 @@ def main():
                     author = row["authors"]
                     rating = float(row["average_rating"])
 
-                    # simple genre fallback
-                    genre = "General"
+                    book = Book(
+                        title=title,
+                        author=author,
+                        genre=random.choice(GENRES),
+                        rating=rating
+                    )
 
                 except Exception:
                     continue
@@ -39,7 +54,7 @@ def main():
                 book = Book(
                     title=title.strip(),
                     author=author.strip(),
-                    genre=genre,
+                    genre=random.choice(GENRES),
                     rating=rating
                 )
 
