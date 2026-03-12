@@ -56,6 +56,7 @@ docs/
 instance/
   books.db
 migrations/
+```
 
 **Setup and Installation**
 --------------------------
