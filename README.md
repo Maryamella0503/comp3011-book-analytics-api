@@ -58,213 +58,222 @@ instance/
 migrations/
 ```
 
-**Setup and Installation**
---------------------------
+## Setup and Installation
 
 Follow the steps below to run the API locally.
 
-### **1\. Clone the repository**
+### 1. Clone the repository
 
-git clone https://github.com/YOUR\_USERNAME/comp3011-book-analytics-api.git
-
+```bash
+git clone https://github.com/YOUR_USERNAME/comp3011-book-analytics-api.git
 cd comp3011-book-analytics-api
+```
 
-### **2\. Create a virtual environment**
+### 2. Create a virtual environment
 
-python3 -m venv .venvActivate the virtual environment:
+```bash
+python3 -m venv .venv
+```
+
+Activate the virtual environment:
 
 **Mac / Linux**
+```bash
+source .venv/bin/activate
+```
 
-source .venv/bin/activate**Windows**.venv\\Scripts\\activate
+**Windows**
+```bash
+.venv\Scripts\activate
+```
 
-### **3\. Install project dependencies**
+### 3. Install project dependencies
 
+```bash
 pip install -r requirements.txt
+```
 
-### **4\. Configure the Flask application**
+### 4. Configure the Flask application
 
 Set the Flask entry point:
 
-export FLASK\_APP=run.py
+```bash
+export FLASK_APP=run.py
+```
 
-### **5\. Apply database migrations**
+### 5. Apply database migrations
 
+```bash
 flask db upgrade
+```
 
-### **6\. Import the dataset**
+### 6. Import the dataset
 
-python scripts/import\_dataset.py
+```bash
+python scripts/import_dataset.py
+```
 
-### **7\. Populate authors**
+### 7. Populate authors
 
-python scripts/populate\_authors.py
+```bash
+python scripts/populate_authors.py
+```
 
-### **8\. Run the API**
+### 8. Run the API
 
+```bash
 python run.py
+```
 
 The API will run locally at:
 
-[http://127.0.0.1:5000](http://127.0.0.1:5000)
+http://127.0.0.1:5000
 
-**Running Tests**
------------------
+## Running Tests
 
 Run the automated test suite with:
 
+```bash
 pytest -q
+```
 
 The tests cover:
 
-*   authentication behaviour
-    
-*   CRUD operations
-    
-*   analytics endpoints
-    
-*   pagination behaviour
-    
+- authentication behaviour
+- CRUD operations
+- analytics endpoints
+- pagination behaviour
 
-**API Documentation**
----------------------
+## API Documentation
 
 Interactive Swagger documentation is available locally at:
 
-[http://127.0.0.1:5000/docs](http://127.0.0.1:5000/docs)
+http://127.0.0.1:5000/docs
 
 The coursework API documentation PDF is stored in:
 
+```
 docs/api-documentation.pdf
+```
 
-**Authentication**
-------------------
+## Authentication
 
 Write operations are protected using JWT authentication.
 
-### **Get a token**
+### Get a token
 
 Send a POST request to:
 
-/auth/loginExample request body:{
+```
+/auth/login
+```
 
-"username": "demo",
+Example request body:
 
-"password": "demo"
-
-}Example response:{
-
-"access\_token": "",
-
-"token\_type": "bearer"
-
+```json
+{
+  "username": "demo",
+  "password": "demo"
 }
+```
 
-### **Use the token**
+Example response:
 
-Pass the token in the Authorization header:Authorization: Bearer Protected endpoints include:
+```json
+{
+  "access_token": "<JWT_TOKEN>",
+  "token_type": "bearer"
+}
+```
 
-*   POST /books
-    
-*   PUT /books/{id}
-    
-*   DELETE /books/{id}
-    
+### Use the token
 
-**Main Endpoints**
-------------------
+Pass the token in the Authorization header:
 
-### **Books**
+```
+Authorization: Bearer <JWT_TOKEN>
+```
 
-*   GET /books – list books with filtering, sorting, and pagination
-    
-*   POST /books – create a new book
-    
-*   GET /books/{id} – retrieve a single book
-    
-*   PUT /books/{id} – update a book
-    
-*   DELETE /books/{id} – delete a book
-    
+Protected endpoints include:
 
-### **Authors**
+- POST /books
+- PUT /books/{id}
+- DELETE /books/{id}
 
-*   GET /authors – list authors
-    
-*   GET /authors/{id}/books – retrieve all books by an author
-    
+## Main Endpoints
 
-### **Analytics**
+### Books
 
-*   GET /analytics/recommendations?seed\_book\_id=&limit=
-    
-*   GET /analytics/genre-stats
-    
-*   GET /analytics/top-rated?limit=
-    
+- GET /books – list books with filtering, sorting, and pagination
+- POST /books – create a new book
+- GET /books/{id} – retrieve a single book
+- PUT /books/{id} – update a book
+- DELETE /books/{id} – delete a book
 
-### **Utility**
+### Authors
 
-*   GET /health – health check endpoint
-    
+- GET /authors – list authors
+- GET /authors/{id}/books – retrieve all books by an author
 
-**Example Requests**
---------------------
+### Analytics
 
-### **Filter books by genre and minimum rating**
+- GET /analytics/recommendations?seed_book_id=&limit=
+- GET /analytics/genre-stats
+- GET /analytics/top-rated?limit=
 
-GET /books?genre=Fantasy&min\_rating=4.5&limit=10
+### Utility
 
-### **Get recommendations for a seed book**
+- GET /health – health check endpoint
 
-GET /analytics/recommendations?seed\_book\_id=10&limit=5
+## Example Requests
 
-### **Get genre statistics**
+### Filter books by genre and minimum rating
 
+```
+GET /books?genre=Fantasy&min_rating=4.5&limit=10
+```
+
+### Get recommendations for a seed book
+
+```
+GET /analytics/recommendations?seed_book_id=10&limit=5
+```
+
+### Get genre statistics
+
+```
 GET /analytics/genre-stats
+```
 
-### **Get all books written by one author**
+### Get all books written by one author
 
+```
 GET /authors/1/books
+```
 
-**Example Genre Statistics Response**
--------------------------------------
+## Example Genre Statistics Response
 
-\[
+```json
+[
+  {
+    "genre": "Fantasy",
+    "avg_rating": 4.21,
+    "book_count": 152
+  },
+  {
+    "genre": "Science Fiction",
+    "avg_rating": 4.08,
+    "book_count": 98
+  }
+]
+```
 
-{
+## Notes
 
-"genre": "Fantasy",
+- The dataset is imported through custom scripts in scripts/.
+- The author–book relationship is modelled through a foreign key from books.author_id to authors.id.
+- SQLite was selected for lightweight local development and reproducibility for assessment.
 
-"avg\_rating": 4.21,
+## License
 
-"book\_count": 152
-
-},
-
-{
-
-"genre": "Science Fiction",
-
-"avg\_rating": 4.08,
-
-"book\_count": 98
-
-}
-
-\]
-
-**Notes**
----------
-
-*   The dataset is imported through custom scripts in scripts/.
-    
-*   The author–book relationship is modelled through a foreign key from books.author\_id to authors.id.
-    
-*   SQLite was selected for lightweight local development and reproducibility for assessment.
-    
-
-**License**
------------
-
-This repository is submitted for academic coursework purposes.://github.com/YOUR_USERNAME/comp3011-book-analytics-api.git
-cd comp3011-book-analytics-api
+This repository is submitted for academic coursework purposes.
