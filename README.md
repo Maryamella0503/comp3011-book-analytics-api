@@ -67,7 +67,7 @@ Authors → Books
 - One author can have multiple books
 - Each book references its author using a foreign key
 
-<img src="docs/database_schema.png" width="400">
+<img src="docs/database_schema.png" width="200">
 
 ## Setup and Installation
 
